@@ -14,7 +14,7 @@ Visit the [live demo](https://wendyqnguyen.github.io/weather-dashboard/)!
 * MapQuest API
 
 ## Screenshot
-<p align="center"><img src="./screenshot.jpeg"></p>
+<p align="center"><img src="./screenshot.jpg"></p>
 
 ### Deployment
 
