@@ -36,7 +36,7 @@
   .card-header {
     color: black;
     background-color: white;
-    padding: 2.5%;
+    /* padding: 2.5%; */
     border-radius: calc(.18rem - 1px) calc(.18rem - 1px) 0 0;
     border-bottom: 0px ;
   }
