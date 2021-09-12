@@ -177,5 +177,7 @@ if (JSON.parse(localStorage.getItem("citiesArray"))){
     citiesArray  =  JSON.parse(localStorage.getItem("citiesArray"));
 };
 
+displayRecentSearches ();
+
 searchFormEl.addEventListener("submit", formSubmitHandler);
 cityButtonsEl.addEventListener("click", recentSearchesHandler);
