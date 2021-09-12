@@ -1,7 +1,8 @@
+var citiesArray = [];
 var searchFormEl = document.querySelector("#search-form");
 var cityInputEl = document.querySelector("#city");
 var forecastContainerEl = document.querySelector("#forecast-container");
-var cityButtonsEl = document.querySelector("#city-buttons");
+var cityButtonsEl = document.querySelector("#recent-searches");
 var cityname;
 
 var currentTempEl =  document.querySelector("#temp");
@@ -23,15 +24,26 @@ var formSubmitHandler = function(event) {
     event.preventDefault();
     // get value from input element
     cityname = cityInputEl.value.trim();
-
+    // if the city name exist, get the forecast and add it to localstorage
     if (cityname) {
-    getCityForecast(cityname);
-    cityInputEl.value = "";
+        getCityForecast(cityname);
+        if (localStorage.getItem("citiesArray")){
+            citiesArray = JSON.parse(localStorage.getItem("citiesArray"));
+            console.log("1"+citiesArray);
+            var idx = citiesArray.length;
+            citiesArray[idx] = cityname;
+            localStorage.setItem("citiesArray", JSON.stringify(citiesArray));
+        } else {
+            citiesArray[0] = cityname;
+            localStorage.setItem("citiesArray", JSON.stringify(citiesArray));
+        }
+        // clear the search field 
+        cityInputEl.value = "";
+    // if city name is blank, alert user
     } else {
-    alert("Please enter a city username");
+            alert("Please enter a city username");
     }
-    // console.log(event);
-  };
+};
 
   var getCityForecast = function(city) {
     var latitude;
@@ -59,10 +71,11 @@ var formSubmitHandler = function(event) {
                             response.json().then(function(data) {
                                 displayForecast(data);
                                 displayNextFivedays(data);
+                                displayRecentSearches();
                             });
                             } else {
                             alert('Error: City Not Found');
-                            }
+                            }   
                         })
                         .catch(function(error) {
                             // Notice this `.catch()` getting chained onto the end of the `.then()` method
@@ -82,12 +95,33 @@ var formSubmitHandler = function(event) {
     
   };
 
-  var displayNextFivedays = function (data) {
+var displayRecentSearches = function (){
+    if (localStorage.getItem("citiesArray")){
+    cityButtonsEl.innerHTML = '';
+    citiesArray = JSON.parse(localStorage.getItem("citiesArray"));
+    
+    if (citiesArray ){
+        for (var i = 0; i < citiesArray.length ; i++){
+            var citySearchBtnEL = document.createElement("button");
+            citySearchBtnEL.textContent = citiesArray[i];
+            citySearchBtnEL.setAttribute("city-id", citiesArray[i]);
+            citySearchBtnEL.setAttribute("class", "btn-2");
+            citySearchBtnEL.setAttribute("class", "btn-2");
+            cityButtonsEl.appendChild(citySearchBtnEL);
+            cityButtonsEl.appendChild(citySearchBtnEL);  
+        }
+    }
+    } else{
+        return;
+    }
+};
+
+var displayNextFivedays = function (data) {
     
     // get icon from one call api 
     var iconID = data.daily[1].weather[0].icon;
     day1El.innerHTML= "<b>" + moment(moment(new Date())).add(1, 'days').format("MM/DD/YYYY") + "</b><br><img alt='weather icon' src=https://openweathermap.org/img/wn/" + iconID + ".png>" + "<br>Temp: " + data.daily[1].temp.day + "°F<br>Wind:  " + data.daily[1].wind_speed + " MPH<br>Humidity: " + data.daily[1].humidity + "%" ;
-    console.log(day2El);
+    
     iconID = data.daily[2].weather[0].icon;
     day2El.innerHTML= moment(moment(new Date())).add(2, 'days').format("MM/DD/YYYY") + "<br><img alt='weather icon' src=https://openweathermap.org/img/wn/" + iconID + ".png>" + "<br>Temp: " + data.daily[2].temp.day + "°F<br>Wind:  " + data.daily[1].wind_speed + " MPH<br>Humidity: " + data.daily[2].humidity + "%" ;
 
@@ -101,7 +135,7 @@ var formSubmitHandler = function(event) {
     day5El.innerHTML= moment(moment(new Date())).add(5, 'days').format("MM/DD/YYYY") + "<br><img alt='weather icon' src=https://openweathermap.org/img/wn/" + iconID + ".png>" + "<br>Temp: " + data.daily[5].temp.day + "°F<br>Wind:  " + data.daily[1].wind_speed + " MPH<br>Humidity: " + data.daily[5].humidity + "%" ;
   };
   
-  var displayForecast = function(data) {
+var displayForecast = function(data) {
     // check if api returned any repos
     if (data.length === 0) {
         forecastContainerEl.textContent = "No forecast found.";
@@ -128,47 +162,19 @@ var formSubmitHandler = function(event) {
 
     };
 
-//   // clear old content
-//   forecastContainerEl.textContent = "";
-//   repoSearchTerm.textContent = searchTerm;
+};
 
-  // loop over repos
-//   for (var i = 0; i < repos.length; i++) {
-//       // format repo name
-//       var repoName = repos[i].owner.login + "/" + repos[i].name;
-  
-//       // create a container for each repo
-//       // create a link for each repo
-//       var repoEl = document.createElement("a");
-//       repoEl.classList = "list-item flex-row justify-space-between align-center";
-//       repoEl.setAttribute("href", "./single-repo.html?repo=" + repoName);
+var recentSearchesHandler = function(event){
+    event.preventDefault();
+    var targetEl = event.target;
+    cityname = targetEl.getAttribute("city-id");
 
-//       // create a span element to hold repository name
-//       var titleEl = document.createElement("span");
-//       titleEl.textContent = repoName;
+    getCityForecast(cityname);
+}
 
-//       // create a status element
-//       var statusEl = document.createElement("span");
-//       statusEl.classList = "flex-row align-center";
-
-//       // check if current repo has issues or not
-//       if (repos[i].open_issues_count > 0) {
-//       statusEl.innerHTML =
-//           "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + " issue(s)";
-//       } else {
-//       statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
-//       }
-    
-//       // append to container
-//       repoEl.appendChild(titleEl);
-//       // append to container
-//       repoEl.appendChild(statusEl);  
-  
-//       // append container to the dom
-//       repoContainerEl.appendChild(repoEl);
-//   }
-//   console.log(repos);
-//   console.log(searchTerm);
+if (JSON.parse(localStorage.getItem("citiesArray"))){
+    citiesArray  =  JSON.parse(localStorage.getItem("citiesArray"));
 };
 
 searchFormEl.addEventListener("submit", formSubmitHandler);
+cityButtonsEl.addEventListener("click", recentSearchesHandler);

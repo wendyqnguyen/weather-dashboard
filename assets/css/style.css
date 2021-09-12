@@ -37,6 +37,7 @@
     background-color: white;
     padding: 2.5%;
     border-radius: calc(.18rem - 1px) calc(.18rem - 1px) 0 0;
+    border-bottom: 0px ;
   }
   
   .card-body {
@@ -48,8 +49,18 @@
       color: white;
       background-color: #74a1cb;
       width:100%;
+      font-size: large;
   }
 
+  .btn-2 {
+    color: black;
+    background-color: lightgray;
+    width:100%;
+    border: none;
+    margin: 5px ;
+    padding: 5px 0 5px 0;
+    font-size: large;
+}
   /* FORM */
 .form-label,
 .form-input,
