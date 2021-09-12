@@ -29,7 +29,7 @@ var formSubmitHandler = function(event) {
         getCityForecast(cityname);
         if (localStorage.getItem("citiesArray")){
             citiesArray = JSON.parse(localStorage.getItem("citiesArray"));
-            console.log("1"+citiesArray);
+            
             var idx = citiesArray.length;
             citiesArray[idx] = cityname;
             localStorage.setItem("citiesArray", JSON.stringify(citiesArray));
@@ -153,7 +153,8 @@ var displayForecast = function(data) {
     currentWindEl.textContent = data.current.wind_speed + " MPH";
     currentHumidityEl.textContent = data.current.humidity + " %";
     currentUVEl.textContent = data.current.uvi;
-    if (data.current.uvi >= 3 && data.current.uvi < 6){
+    
+    if (data.current.uvi < 6){
         currentUVEl.setAttribute("style", "background-color:#28a745");
     }else if(data.current.uvi >= 6 && data.current.uvi <= 8){
         currentUVEl.setAttribute("style", "background-color:#ffc107");
